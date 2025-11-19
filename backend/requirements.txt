@@ -3,3 +3,4 @@ argon2-cffi
 pycryptodome
 boto3
 djangorestframework-simplejwt
+argon2-cffi

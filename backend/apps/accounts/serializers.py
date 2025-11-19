@@ -1,6 +1,6 @@
-import hmac
 from rest_framework import serializers
 from .models import User
+from utils.hashers import verify_password
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,12 +11,10 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        user = User(
+        user = User.objects.create_user(
             email=validated_data['email'],
             master_key_hash=validated_data['master_key_hash']
         )
-        user.set_unusable_password()  # No plaintext password is stored
-        user.save()
         return user
 
 class LoginSerializer(serializers.Serializer):
@@ -30,7 +28,7 @@ class LoginSerializer(serializers.Serializer):
         if email and master_key_hash:
             try:
                 user = User.objects.get(email=email)
-                if hmac.compare_digest(user.master_key_hash, master_key_hash):
+                if verify_password(user.master_key_hash, master_key_hash):
                     data['user'] = user
                 else:
                     raise serializers.ValidationError('Invalid credentials')
