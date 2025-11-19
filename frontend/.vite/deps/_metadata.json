@@ -1,0 +1,46 @@
+{
+  "hash": "b20f5ba1",
+  "configHash": "afd69ef5",
+  "lockfileHash": "d0894c72",
+  "browserHash": "d7106cbd",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "bb2c8b7c",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "27ec0496",
+      "needsInterop": true
+    },
+    "argon2-browser": {
+      "src": "../../node_modules/argon2-browser/lib/argon2.js",
+      "file": "argon2-browser.js",
+      "fileHash": "23576764",
+      "needsInterop": true
+    },
+    "axios": {
+      "src": "../../node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "ac133ccf",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-TA4E7RYN": {
+      "file": "chunk-TA4E7RYN.js"
+    },
+    "argon2-FVPKUWJI": {
+      "file": "argon2-FVPKUWJI.js"
+    },
+    "chunk-ENWF3KVE": {
+      "file": "chunk-ENWF3KVE.js"
+    },
+    "chunk-FU26JO2P": {
+      "file": "chunk-FU26JO2P.js"
+    }
+  }
+}

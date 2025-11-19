@@ -2,6 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from .models import User
+from utils.hashers import hash_password
 
 class AccountsAPITests(APITestCase):
 
@@ -11,7 +12,8 @@ class AccountsAPITests(APITestCase):
         """
         # Signup
         signup_url = reverse('signup')
-        signup_data = {'email': 'test@example.com', 'master_key_hash': 'some_hash'}
+        master_key_hash = hash_password('password123')
+        signup_data = {'email': 'test@example.com', 'master_key_hash': master_key_hash}
         response = self.client.post(signup_url, signup_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 1)
@@ -19,7 +21,7 @@ class AccountsAPITests(APITestCase):
 
         # Login
         login_url = reverse('login')
-        login_data = {'email': 'test@example.com', 'master_key_hash': 'some_hash'}
+        login_data = {'email': 'test@example.com', 'master_key_hash': 'password123'}
         response = self.client.post(login_url, login_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('access', response.data)
@@ -30,13 +32,9 @@ class AccountsAPITests(APITestCase):
         Ensure login fails with invalid credentials.
         """
         # Create a user first
-        User.objects.create_user(email='test@example.com', password='some_hash')
-        user = User.objects.get(email='test@example.com')
-        user.master_key_hash = 'some_hash'
-        user.save()
-
+        User.objects.create_user(email='test@example.com', password='password123')
 
         url = reverse('login')
-        data = {'email': 'test@example.com', 'master_key_hash': 'wrong_hash'}
+        data = {'email': 'test@example.com', 'master_key_hash': 'wrong_password'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

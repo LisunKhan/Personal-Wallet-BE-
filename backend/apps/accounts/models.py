@@ -1,13 +1,21 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
+from utils.hashers import hash_password
+
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, email, password=None, master_key_hash=None, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
+
+        if not master_key_hash and password:
+            master_key_hash = hash_password(password)
+        elif not master_key_hash and not password:
+             raise ValueError('User must have either a password or a master key hash')
+
+        user = self.model(email=email, master_key_hash=master_key_hash, **extra_fields)
+        user.set_unusable_password()
         user.save(using=self._db)
         return user
 
@@ -20,7 +28,7 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(email, password, **extra_fields)
+        return self.create_user(email, password=password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
