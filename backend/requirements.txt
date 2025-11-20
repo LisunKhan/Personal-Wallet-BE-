@@ -1,6 +1,8 @@
 Django
+djangorestframework
 argon2-cffi
 pycryptodome
 boto3
 djangorestframework-simplejwt
+django-cors-headers
 argon2-cffi

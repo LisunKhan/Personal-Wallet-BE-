@@ -28,7 +28,8 @@ class LoginSerializer(serializers.Serializer):
         if email and master_key_hash:
             try:
                 user = User.objects.get(email=email)
-                if verify_password(user.master_key_hash, master_key_hash):
+                # For login, we compare the hashed values directly since both are hashed
+                if user.master_key_hash == master_key_hash:
                     data['user'] = user
                 else:
                     raise serializers.ValidationError('Invalid credentials')

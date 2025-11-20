@@ -9,10 +9,14 @@ class UserManager(BaseUserManager):
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
 
-        if not master_key_hash and password:
+        if master_key_hash:
+            # master_key_hash is already hashed from frontend, use as-is
+            pass
+        elif password:
+            # Hash the password if provided instead of master_key_hash
             master_key_hash = hash_password(password)
-        elif not master_key_hash and not password:
-             raise ValueError('User must have either a password or a master key hash')
+        else:
+            raise ValueError('User must have either a password or a master key hash')
 
         user = self.model(email=email, master_key_hash=master_key_hash, **extra_fields)
         user.set_unusable_password()
