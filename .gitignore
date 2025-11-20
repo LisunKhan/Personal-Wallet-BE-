@@ -1,19 +1,26 @@
-/.idea/dataSources/c865c5c8-2c69-46b0-b753-ee4d76ebede6.xml
-/.idea/copilot.data.migration.agent.xml
-/.idea/copilot.data.migration.ask.xml
-/.idea/copilot.data.migration.ask2agent.xml
-/.idea/copilot.data.migration.edit.xml
-/.idea/dataSources/d74fdedd-3af1-4dd8-bcf6-17fe42e27572.xml
-/.idea/data_source_mapping.xml
-/.idea/dataSources.local.xml
-/.idea/dataSources.xml
-/.idea/git_toolbox_prj.xml
-/identifier.sqlite
-/.idea/dataSources/c865c5c8-2c69-46b0-b753-ee4d76ebede6/storage_v2/_src_/schema/main.uQUzAA.meta
-/.idea/dataSources/d74fdedd-3af1-4dd8-bcf6-17fe42e27572/storage_v2/_src_/schema/main.uQUzAA.meta
-/.idea/misc.xml
-/.idea/Personal-Wallet-BE-.iml
-/.idea/inspectionProfiles/profiles_settings.xml
-/.idea/inspectionProfiles/Project_Default.xml
-/.idea/vcs.xml
-/.idea/workspace.xml
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
