@@ -38,22 +38,23 @@ const PasswordStrengthIndicator = ({ password, className = '' }) => {
   };
 
   return (
-    <div className={`flex items-center space-x-2 ${className}`}>
-      <div className="flex space-x-1">
+    <div className={`d-flex align-items-center ${className}`}>
+      <div className="d-flex me-3" style={{gap: '2px'}}>
         {[1, 2, 3, 4, 5, 6].map((level) => (
           <div
             key={level}
-            className={`h-2 w-4 rounded-sm ${
+            className={`strength-bar ${
               level <= strength.score
-                ? getColorClasses(strength.color).split(' ')[0]
-                : 'bg-gray-200'
+                ? `strength-${strength.color}`
+                : 'bg-light'
             }`}
+            style={{width: '16px', height: '4px', borderRadius: '2px'}}
           />
         ))}
       </div>
-      <span className={`text-sm font-medium ${getColorClasses(strength.color).split(' ')[1]}`}>
+      <small className={`fw-medium ${getColorClasses(strength.color).split(' ')[1]}`}>
         {strength.label}
-      </span>
+      </small>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 const CategoryManager = ({ onClose }) => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const { data: categories, isLoading } = useCategories();
   const createCategoryMutation = useCreateCategory();
@@ -42,71 +43,175 @@ const CategoryManager = ({ onClose }) => {
     }
   };
 
+  // Filter categories based on search term
+  const filteredCategories = categories?.filter(category =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    category.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
+
   if (isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="modal modal-custom d-block" style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body text-center py-5">
+              <LoadingSpinner />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900">Manage Categories</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Create Category Button */}
-        <div className="mb-6">
-          <button
-            onClick={() => setShowCreateForm(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            New Category
-          </button>
-        </div>
-
-        {/* Create/Edit Form */}
-        {(showCreateForm || editingCategory) && (
-          <CategoryForm
-            category={editingCategory}
-            onSubmit={editingCategory ? handleUpdateCategory : handleCreateCategory}
-            onCancel={() => {
-              setShowCreateForm(false);
-              setEditingCategory(null);
-            }}
-            isLoading={createCategoryMutation.isPending || updateCategoryMutation.isPending}
-          />
-        )}
-
-        {/* Categories List */}
-        <div className="space-y-3">
-          {categories && categories.length > 0 ? (
-            categories.map((category) => (
-              <CategoryItem
-                key={category.id}
-                category={category}
-                onEdit={setEditingCategory}
-                onDelete={handleDeleteCategory}
-                isDeleting={deleteCategoryMutation.isPending}
-              />
-            ))
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              <p>No categories yet. Create your first category to organize your vault items.</p>
+    <div className="modal modal-custom d-block" style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
+      <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div className="modal-content modal-content-custom">
+          {/* Header */}
+          <div className="modal-header border-0 pb-0 gradient-bg text-white">
+            <div className="w-100">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h2 className="modal-title h3 fw-bold text-white mb-0">🏷️ Category Manager</h2>
+                <button onClick={onClose} className="btn-close btn-close-white" aria-label="Close"></button>
+              </div>
+              <p className="text-white-50 mb-0">Organize your vault items with custom categories</p>
             </div>
-          )}
+          </div>
+
+          <div className="modal-body p-4">
+            {/* Action Bar */}
+            <div className="row g-3 mb-4 align-items-center">
+              <div className="col-md-6">
+                <div className="position-relative">
+                  <div className="position-absolute top-50 start-0 translate-middle-y ps-3">
+                    <svg width="16" height="16" className="text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="🔍 Search categories..."
+                    className="form-control form-control-custom ps-5"
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 text-md-end">
+                <button
+                  onClick={() => setShowCreateForm(true)}
+                  className="btn btn-primary-custom btn-custom"
+                >
+                  <svg className="me-2" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  New Category
+                </button>
+              </div>
+            </div>
+
+            {/* Create/Edit Form */}
+            {(showCreateForm || editingCategory) && (
+              <div className="mb-4">
+                <CategoryForm
+                  category={editingCategory}
+                  onSubmit={editingCategory ? handleUpdateCategory : handleCreateCategory}
+                  onCancel={() => {
+                    setShowCreateForm(false);
+                    setEditingCategory(null);
+                  }}
+                  isLoading={createCategoryMutation.isPending || updateCategoryMutation.isPending}
+                />
+              </div>
+            )}
+
+            {/* Categories Grid */}
+            {filteredCategories.length > 0 ? (
+              <div className="row g-4">
+                {filteredCategories.map((category) => (
+                  <div key={category.id} className="col-lg-4 col-md-6 col-sm-12">
+                    <CategoryCard
+                      category={category}
+                      onEdit={setEditingCategory}
+                      onDelete={handleDeleteCategory}
+                      isDeleting={deleteCategoryMutation.isPending}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyCategoriesState 
+                onCreateCategory={() => setShowCreateForm(true)}
+                hasSearchTerm={searchTerm.length > 0}
+              />
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="modal-footer border-0 pt-0">
+            <div className="d-flex justify-content-between align-items-center w-100">
+              <small className="text-muted">
+                {filteredCategories.length} {filteredCategories.length === 1 ? 'category' : 'categories'} 
+                {searchTerm && ' found'}
+              </small>
+              <button
+                onClick={onClose}
+                className="btn btn-outline-secondary btn-custom"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
+// Empty State Component
+const EmptyCategoriesState = ({ onCreateCategory, hasSearchTerm }) => (
+  <div className="text-center py-5 fade-in">
+    <div className="card card-custom border-0 shadow-lg">
+      <div className="card-body p-5">
+        <div className="mb-4">
+          <div className="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style={{width: '100px', height: '100px'}}>
+            {hasSearchTerm ? (
+              <svg width="50" height="50" className="text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            ) : (
+              <svg width="50" height="50" className="text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+            )}
+          </div>
+        </div>
+        <h3 className="h2 fw-bold text-dark-override mb-3">
+          {hasSearchTerm ? 'No categories found' : 'No categories yet'}
+        </h3>
+        <p className="text-muted mb-4 lead">
+          {hasSearchTerm 
+            ? 'Try adjusting your search terms or create a new category.'
+            : 'Create your first category to organize your vault items by type, purpose, or any system that works for you.'
+          }
+        </p>
+        {!hasSearchTerm && (
+          <button
+            onClick={onCreateCategory}
+            className="btn btn-primary-custom btn-lg btn-custom"
+          >
+            <svg className="me-2" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Create Your First Category
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
+// Category Form Component
 const CategoryForm = ({ category, onSubmit, onCancel, isLoading }) => {
   const [formData, setFormData] = useState({
     name: category?.name || '',
@@ -129,100 +234,132 @@ const CategoryForm = ({ category, onSubmit, onCancel, isLoading }) => {
   ];
 
   const colorOptions = [
-    '#3B82F6', // Blue
-    '#10B981', // Green
-    '#F59E0B', // Yellow
-    '#EF4444', // Red
-    '#8B5CF6', // Purple
-    '#F97316', // Orange
-    '#06B6D4', // Cyan
-    '#84CC16', // Lime
+    { color: '#3B82F6', name: 'Blue' },
+    { color: '#10B981', name: 'Green' },
+    { color: '#F59E0B', name: 'Yellow' },
+    { color: '#EF4444', name: 'Red' },
+    { color: '#8B5CF6', name: 'Purple' },
+    { color: '#F97316', name: 'Orange' },
+    { color: '#06B6D4', name: 'Cyan' },
+    { color: '#84CC16', name: 'Lime' },
   ];
 
   return (
-    <div className="bg-gray-50 rounded-lg p-4 mb-6">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">
-        {category ? 'Edit Category' : 'Create New Category'}
-      </h3>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-          <input
-            type="text"
-            value={formData.name}
-            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="e.g., Work, Personal, Banking"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Category Type</label>
-          <select
-            value={formData.category_type}
-            onChange={(e) => setFormData(prev => ({ ...prev, category_type: e.target.value }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          >
-            {categoryTypeOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.icon} {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <textarea
-            value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            rows="2"
-            placeholder="Optional description..."
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
-          <div className="flex gap-2">
-            {colorOptions.map((color) => (
-              <button
-                key={color}
-                type="button"
-                onClick={() => setFormData(prev => ({ ...prev, color }))}
-                className={`w-8 h-8 rounded-full border-2 ${formData.color === color ? 'border-gray-800' : 'border-gray-300'
-                  }`}
-                style={{ backgroundColor: color }}
+    <div className="card card-custom border-primary slide-up">
+      <div className="card-header bg-primary bg-opacity-10 border-primary">
+        <h4 className="card-title mb-0 text-dark-override fw-bold">
+          {category ? '✏️ Edit Category' : '✨ Create New Category'}
+        </h4>
+      </div>
+      <div className="card-body">
+        <form onSubmit={handleSubmit}>
+          <div className="row g-3">
+            <div className="col-md-6">
+              <label className="form-label fw-semibold text-dark-override">Category Name</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                className="form-control form-control-custom"
+                placeholder="e.g., Work, Personal, Banking"
+                required
               />
-            ))}
-          </div>
-        </div>
+            </div>
 
-        <div className="flex gap-3 pt-2">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-          >
-            {isLoading ? 'Saving...' : (category ? 'Update' : 'Create')}
-          </button>
-        </div>
-      </form>
+            <div className="col-md-6">
+              <label className="form-label fw-semibold text-dark-override">Category Type</label>
+              <select
+                value={formData.category_type}
+                onChange={(e) => setFormData(prev => ({ ...prev, category_type: e.target.value }))}
+                className="form-select form-control-custom"
+                required
+              >
+                {categoryTypeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.icon} {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="col-12">
+              <label className="form-label fw-semibold text-dark-override">Description</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                className="form-control form-control-custom"
+                rows="2"
+                placeholder="Optional description to help identify this category..."
+              />
+            </div>
+
+            <div className="col-12">
+              <label className="form-label fw-semibold text-dark-override mb-3">Category Color</label>
+              <div className="d-flex flex-wrap gap-2">
+                {colorOptions.map((option) => (
+                  <button
+                    key={option.color}
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, color: option.color }))}
+                    className={`btn p-0 border-0 position-relative ${
+                      formData.color === option.color ? 'shadow-lg' : ''
+                    }`}
+                    style={{ width: '40px', height: '40px' }}
+                    title={option.name}
+                  >
+                    <div
+                      className="w-100 h-100 rounded-circle"
+                      style={{ backgroundColor: option.color }}
+                    />
+                    {formData.color === option.color && (
+                      <div className="position-absolute top-50 start-50 translate-middle">
+                        <svg width="16" height="16" className="text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="d-flex gap-2 mt-4">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="btn btn-outline-secondary btn-custom flex-fill"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="btn btn-primary-custom btn-custom flex-fill"
+            >
+              {isLoading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <svg className="me-2" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  {category ? 'Update Category' : 'Create Category'}
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
 
-const CategoryItem = ({ category, onEdit, onDelete, isDeleting }) => {
+// Category Card Component
+const CategoryCard = ({ category, onEdit, onDelete, isDeleting }) => {
   const getTypeIcon = (type) => {
     const icons = {
       password: '🔑',
@@ -246,44 +383,75 @@ const CategoryItem = ({ category, onEdit, onDelete, isDeleting }) => {
   };
 
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-      <div className="flex items-center space-x-3">
-        <div
-          className="w-4 h-4 rounded-full"
-          style={{ backgroundColor: category.color }}
-        />
-        <div className="flex items-center space-x-2">
-          <span className="text-lg">{getTypeIcon(category.category_type)}</span>
-          <div>
-            <h4 className="font-medium text-gray-900">{category.name}</h4>
-            <p className="text-sm text-gray-500">
-              {getTypeLabel(category.category_type)}
-              {category.description && ` • ${category.description}`}
-            </p>
+    <div className="card card-custom h-100 fade-in">
+      <div className="card-body d-flex flex-column">
+        {/* Category Header */}
+        <div className="d-flex align-items-center mb-3">
+          <div
+            className="rounded-circle me-3 d-flex align-items-center justify-content-center"
+            style={{ 
+              backgroundColor: category.color, 
+              width: '48px', 
+              height: '48px',
+              color: 'white',
+              fontSize: '20px'
+            }}
+          >
+            {getTypeIcon(category.category_type)}
+          </div>
+          <div className="flex-grow-1">
+            <h5 className="card-title mb-1 text-dark-override fw-bold">{category.name}</h5>
+            <small className="text-muted">{getTypeLabel(category.category_type)}</small>
           </div>
         </div>
-      </div>
 
-      <div className="flex items-center space-x-2">
-        <button
-          onClick={() => onEdit(category)}
-          className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
-          title="Edit category"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-          </svg>
-        </button>
-        <button
-          onClick={() => onDelete(category.id)}
-          disabled={isDeleting}
-          className="p-2 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
-          title="Delete category"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-          </svg>
-        </button>
+        {/* Category Description */}
+        {category.description && (
+          <p className="card-text text-muted mb-3 flex-grow-1">
+            {category.description}
+          </p>
+        )}
+
+        {/* Category Stats */}
+        <div className="mb-3">
+          <div className="d-flex align-items-center text-muted">
+            <svg className="me-2" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+            <small>Category ID: {category.id}</small>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="d-flex gap-2 mt-auto">
+          <button
+            onClick={() => onEdit(category)}
+            className="btn btn-outline-primary btn-sm flex-fill"
+            title="Edit category"
+          >
+            <svg className="me-1" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Edit
+          </button>
+          <button
+            onClick={() => onDelete(category.id)}
+            disabled={isDeleting}
+            className="btn btn-outline-danger btn-sm flex-fill"
+            title="Delete category"
+          >
+            {isDeleting ? (
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            ) : (
+              <>
+                <svg className="me-1" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Delete
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

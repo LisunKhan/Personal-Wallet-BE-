@@ -38,8 +38,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-150px)]">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg border border-gray-200">
         <h2 className="text-3xl font-extrabold text-center text-gray-800">Welcome Back!</h2>
         <p className="text-center text-gray-600">Sign in to continue to your Digital Wallet</p>
         <form onSubmit={handleLogin} className="space-y-6">

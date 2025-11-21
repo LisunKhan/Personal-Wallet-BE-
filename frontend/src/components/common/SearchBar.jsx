@@ -12,9 +12,9 @@ const SearchBar = ({ placeholder = 'Search...', onSearch, className = '' }) => {
   }, [searchTerm, onSearch]);
 
   return (
-    <div className={`relative ${className}`}>
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className={`position-relative ${className}`}>
+      <div className="position-absolute top-50 start-0 translate-middle-y ps-3">
+        <svg width="16" height="16" className="text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </div>
@@ -23,7 +23,7 @@ const SearchBar = ({ placeholder = 'Search...', onSearch, className = '' }) => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder={placeholder}
-        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="form-control form-control-custom ps-5"
       />
     </div>
   );

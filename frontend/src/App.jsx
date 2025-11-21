@@ -62,10 +62,10 @@ function AppContent() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-white">
       <Header />
       
-      <main className="flex-grow">
+      <main className="flex-grow bg-gray-50">
         <Routes>
           {/* Public Routes */}
           <Route 
