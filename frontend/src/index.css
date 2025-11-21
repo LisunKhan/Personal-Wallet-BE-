@@ -355,14 +355,124 @@ a:hover {
   justify-content: center;
 }
 
+/* Login & Signup Page Styles */
+.login-card,
+.signup-card {
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  animation: slideUp 0.6s ease-out;
+}
+
+.login-icon,
+.signup-icon {
+  width: 100px;
+  height: 100px;
+  animation: bounceIn 0.8s ease-out;
+}
+
+.login-btn,
+.signup-btn {
+  padding: 1rem 2rem !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+.login-btn:hover,
+.signup-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4) !important;
+}
+
+.signup-btn {
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+.signup-btn:hover {
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* Enhanced Form Controls for Auth Pages */
+.form-control-lg.form-control-custom {
+  padding: 1rem 1.25rem !important;
+  font-size: 1.1rem !important;
+  border-radius: 12px !important;
+  border: 2px solid #e5e7eb !important;
+  transition: all 0.3s ease !important;
+}
+
+.form-control-lg.form-control-custom:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Auth Page Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Password Strength Enhancements */
+.auth-page .strength-bar {
+  height: 6px !important;
+  border-radius: 3px !important;
+}
+
+/* Alert Enhancements for Auth Pages */
+.alert {
+  border-radius: 12px !important;
+  border: none !important;
+  font-weight: 500 !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .user-dropdown {
     min-width: 260px !important;
   }
   
-  .user-profile-card {
+  .user-profile-card-large {
     padding: 0.5rem 0.75rem !important;
+    min-width: 150px !important;
+  }
+  
+  .login-card,
+  .signup-card {
+    margin: 1rem !important;
+  }
+  
+  .login-icon,
+  .signup-icon {
+    width: 80px;
+    height: 80px;
   }
 }
 
@@ -403,4 +513,90 @@ a:hover {
 
 .bg-light-override {
   background-color: #ffffff !important;
+}
+/* Modal improvements */
+.modal-custom {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: 0;
+}
+
+.modal-custom .modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 0.5rem;
+  pointer-events: none;
+}
+
+.modal-custom .modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  outline: 0;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure modals appear above everything */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+
+/* Modal z-index hierarchy */
+.modal-custom[style*="z-index: 1050"] {
+  z-index: 1050 !important;
+}
+
+.modal-custom[style*="z-index: 1055"] {
+  z-index: 1055 !important;
+}
+
+.modal-custom[style*="z-index: 1060"] {
+  z-index: 1060 !important;
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Dropdown menu z-index fix */
+.dropdown-menu {
+  z-index: 1070 !important;
+}
+
+/* Card hover effects */
+.card-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease;
+}
+
+/* Button improvements */
+.btn-custom {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-custom:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
