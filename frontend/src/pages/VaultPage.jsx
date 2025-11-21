@@ -35,22 +35,47 @@ const VaultPage = () => {
 
   const handleCreateItem = async (type, formData) => {
     try {
-      const itemData = {
-        name: formData.name,
-        type: type,
-        category: formData.category || null,
-        notes: formData.notes || '',
-        data: {}, // Will be populated based on type
-      };
-
-      // Add type-specific data
+      // Prepare encrypted data based on item type
+      let encryptedData = {};
+      
       if (type === 'password') {
-        itemData.data = {
+        encryptedData = {
           username: formData.username || '',
           password: formData.password || '',
           url: formData.url || '',
+          notes: formData.notes || '',
+        };
+      } else if (type === 'note') {
+        encryptedData = {
+          content: formData.notes || '',
+          is_markdown: false,
+        };
+      } else if (type === 'card') {
+        encryptedData = {
+          card_number: formData.cardNumber || '',
+          cardholder_name: formData.cardholderName || '',
+          expiry_month: formData.expiryMonth || '',
+          expiry_year: formData.expiryYear || '',
+          cvv: formData.cvv || '',
+          notes: formData.notes || '',
+        };
+      } else if (type === 'identity') {
+        encryptedData = {
+          first_name: formData.firstName || '',
+          last_name: formData.lastName || '',
+          email: formData.email || '',
+          phone: formData.phone || '',
+          notes: formData.notes || '',
         };
       }
+
+      const itemData = {
+        name: formData.name,
+        item_type: type, // Changed from 'type' to 'item_type'
+        category: formData.category || null,
+        encrypted_data: JSON.stringify(encryptedData), // Changed from 'data' to 'encrypted_data'
+        tags: formData.tags || [],
+      };
 
       await createVaultItemMutation.mutateAsync(itemData);
       setShowCreateForm(false);
@@ -245,6 +270,18 @@ const CreateItemModal = ({ onClose, onCreate, categories, isLoading }) => {
     url: '',
     notes: '',
     category: '',
+    // Card fields
+    cardNumber: '',
+    cardholderName: '',
+    expiryMonth: '',
+    expiryYear: '',
+    cvv: '',
+    // Identity fields
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    tags: [],
   });
 
   const itemTypes = [
@@ -332,6 +369,7 @@ const CreateItemModal = ({ onClose, onCreate, categories, isLoading }) => {
                 </select>
               </div>
 
+              {/* Type-specific fields */}
               {selectedType === 'password' && (
                 <>
                   <div className="mb-3">
@@ -399,6 +437,125 @@ const CreateItemModal = ({ onClose, onCreate, categories, isLoading }) => {
                       className="form-control form-control-custom"
                       placeholder="https://example.com"
                     />
+                  </div>
+                </>
+              )}
+
+              {selectedType === 'card' && (
+                <>
+                  <div className="row g-3 mb-3">
+                    <div className="col-12">
+                      <label className="form-label fw-semibold text-dark-override">Card Number</label>
+                      <input
+                        type="text"
+                        value={formData.cardNumber}
+                        onChange={(e) => setFormData(prev => ({ ...prev, cardNumber: e.target.value }))}
+                        className="form-control form-control-custom"
+                        placeholder="1234 5678 9012 3456"
+                        maxLength="19"
+                      />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label fw-semibold text-dark-override">Cardholder Name</label>
+                      <input
+                        type="text"
+                        value={formData.cardholderName}
+                        onChange={(e) => setFormData(prev => ({ ...prev, cardholderName: e.target.value }))}
+                        className="form-control form-control-custom"
+                        placeholder="John Doe"
+                      />
+                    </div>
+                    <div className="col-4">
+                      <label className="form-label fw-semibold text-dark-override">Month</label>
+                      <select
+                        value={formData.expiryMonth}
+                        onChange={(e) => setFormData(prev => ({ ...prev, expiryMonth: e.target.value }))}
+                        className="form-select form-control-custom"
+                      >
+                        <option value="">MM</option>
+                        {Array.from({length: 12}, (_, i) => (
+                          <option key={i+1} value={String(i+1).padStart(2, '0')}>
+                            {String(i+1).padStart(2, '0')}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="col-4">
+                      <label className="form-label fw-semibold text-dark-override">Year</label>
+                      <select
+                        value={formData.expiryYear}
+                        onChange={(e) => setFormData(prev => ({ ...prev, expiryYear: e.target.value }))}
+                        className="form-select form-control-custom"
+                      >
+                        <option value="">YYYY</option>
+                        {Array.from({length: 20}, (_, i) => {
+                          const year = new Date().getFullYear() + i;
+                          return (
+                            <option key={year} value={year}>
+                              {year}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    <div className="col-4">
+                      <label className="form-label fw-semibold text-dark-override">CVV</label>
+                      <input
+                        type="text"
+                        value={formData.cvv}
+                        onChange={(e) => setFormData(prev => ({ ...prev, cvv: e.target.value }))}
+                        className="form-control form-control-custom"
+                        placeholder="123"
+                        maxLength="4"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {selectedType === 'identity' && (
+                <>
+                  <div className="row g-3 mb-3">
+                    <div className="col-md-6">
+                      <label className="form-label fw-semibold text-dark-override">First Name</label>
+                      <input
+                        type="text"
+                        value={formData.firstName}
+                        onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                        className="form-control form-control-custom"
+                        placeholder="John"
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label fw-semibold text-dark-override">Last Name</label>
+                      <input
+                        type="text"
+                        value={formData.lastName}
+                        onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                        className="form-control form-control-custom"
+                        placeholder="Doe"
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label fw-semibold text-dark-override">Email</label>
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                        className="form-control form-control-custom"
+                        placeholder="john@example.com"
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label fw-semibold text-dark-override">Phone</label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                        className="form-control form-control-custom"
+                        placeholder="+1 (555) 123-4567"
+                      />
+                    </div>
                   </div>
                 </>
               )}

@@ -69,9 +69,9 @@ class VaultService {
     try {
       const params = new URLSearchParams();
       
-      if (filters.type) params.append('type', filters.type);
+      if (filters.type) params.append('item_type', filters.type); // Changed from 'type' to 'item_type'
       if (filters.category) params.append('category', filters.category);
-      if (filters.favorite !== undefined) params.append('favorite', filters.favorite);
+      if (filters.favorite !== undefined) params.append('is_favorite', filters.favorite); // Changed from 'favorite' to 'is_favorite'
       if (filters.search) params.append('search', filters.search);
 
       const response = await api.get(`/vault/items/?${params.toString()}`);

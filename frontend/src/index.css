@@ -178,6 +178,63 @@ a:hover {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Header Navigation Styles */
+.navbar-nav .nav-link {
+  position: relative;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+}
+
+/* Inactive navigation links */
+.nav-link-inactive {
+  color: white !important;
+  background-color: transparent !important;
+}
+
+.nav-link-inactive:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  transform: translateY(-1px);
+}
+
+/* Active navigation links */
+.nav-link-active {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #3b82f6 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link-active:hover {
+  background-color: rgba(255, 255, 255, 1) !important;
+  color: #2563eb !important;
+  transform: translateY(-1px);
+}
+
+/* Ensure SVG icons inherit the text color */
+.nav-link-active svg,
+.nav-link-inactive svg {
+  color: inherit !important;
+}
+
+/* Ensure navigation is always visible on desktop */
+@media (min-width: 992px) {
+  .navbar-collapse {
+    display: flex !important;
+  }
+}
+
+/* Mobile navigation improvements */
+@media (max-width: 991px) {
+  .navbar-nav {
+    padding: 1rem 0;
+  }
+  
+  .navbar-nav .nav-item {
+    margin: 0.25rem 0;
+  }
+}
+
 /* Responsive utilities */
 @media (max-width: 768px) {
   .container-fluid {

@@ -13,47 +13,56 @@ const SettingsPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600 mt-2">
-            Manage your account and application preferences
-          </p>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
-          <div className="lg:w-64">
-            <nav className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <ul className="space-y-2">
-                {tabs.map((tab) => (
-                  <li key={tab.id}>
-                    <button
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`w-full text-left px-4 py-3 rounded-lg flex items-center transition-colors ${
-                        activeTab === tab.id
-                          ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                          : 'hover:bg-gray-50 text-gray-700'
-                      }`}
-                    >
-                      <span className="mr-3">{tab.icon}</span>
-                      {tab.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+    <div className="min-vh-100 bg-light-override">
+      <div className="gradient-bg-light min-vh-100 py-4">
+        <div className="container-fluid">
+          {/* Header */}
+          <div className="row mb-4 fade-in">
+            <div className="col-12">
+              <h1 className="display-4 fw-bold text-dark-override mb-2">⚙️ Settings</h1>
+              <p className="lead text-muted">
+                Manage your account and application preferences
+              </p>
+            </div>
           </div>
 
-          {/* Content */}
-          <div className="flex-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              {activeTab === 'account' && <AccountSettings user={user} />}
-              {activeTab === 'security' && <SecuritySettings />}
-              {activeTab === 'preferences' && <PreferencesSettings />}
-              {activeTab === 'data' && <DataSettings />}
+          <div className="row g-4">
+            {/* Sidebar */}
+            <div className="col-lg-3 col-md-4">
+              <div className="card card-custom">
+                <div className="card-body p-3">
+                  <nav>
+                    <ul className="nav nav-pills flex-column">
+                      {tabs.map((tab) => (
+                        <li key={tab.id} className="nav-item mb-1">
+                          <button
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`nav-link w-100 text-start d-flex align-items-center ${activeTab === tab.id
+                                ? 'active'
+                                : 'text-dark-override'
+                              }`}
+                          >
+                            <span className="me-3 fs-5">{tab.icon}</span>
+                            <span className="fw-medium">{tab.label}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="col-lg-9 col-md-8">
+              <div className="card card-custom">
+                <div className="card-body">
+                  {activeTab === 'account' && <AccountSettings user={user} />}
+                  {activeTab === 'security' && <SecuritySettings />}
+                  {activeTab === 'preferences' && <PreferencesSettings />}
+                  {activeTab === 'data' && <DataSettings />}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -64,37 +73,38 @@ const SettingsPage = () => {
 
 const AccountSettings = ({ user }) => (
   <div>
-    <h2 className="text-xl font-semibold text-gray-900 mb-6">Account Information</h2>
-    <div className="space-y-6">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+    <h2 className="h3 fw-bold text-dark-override mb-4">👤 Account Information</h2>
+    <div className="row g-4">
+      <div className="col-12">
+        <label className="form-label fw-semibold text-dark-override">Email Address</label>
         <input
           type="email"
           value={user?.email || ''}
           disabled
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+          className="form-control form-control-custom bg-light"
         />
-        <p className="text-sm text-gray-500 mt-1">Email cannot be changed</p>
+        <div className="form-text">Email cannot be changed</div>
       </div>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Account Created</label>
+
+      <div className="col-12">
+        <label className="form-label fw-semibold text-dark-override">Account Created</label>
         <input
           type="text"
           value="Recently"
           disabled
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+          className="form-control form-control-custom bg-light"
         />
       </div>
 
-      <div className="pt-4 border-t border-gray-200">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Danger Zone</h3>
-        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+      <div className="col-12">
+        <hr className="my-4" />
+        <h3 className="h5 fw-bold text-danger mb-3">⚠️ Danger Zone</h3>
+        <button className="btn btn-danger">
           Delete Account
         </button>
-        <p className="text-sm text-gray-500 mt-2">
+        <div className="form-text text-danger mt-2">
           This action cannot be undone. All your data will be permanently deleted.
-        </p>
+        </div>
       </div>
     </div>
   </div>
@@ -102,39 +112,41 @@ const AccountSettings = ({ user }) => (
 
 const SecuritySettings = () => (
   <div>
-    <h2 className="text-xl font-semibold text-gray-900 mb-6">Security Settings</h2>
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Master Password</h3>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+    <h2 className="h3 fw-bold text-dark-override mb-4">🔒 Security Settings</h2>
+    <div className="row g-4">
+      <div className="col-12">
+        <h3 className="h5 fw-bold text-dark-override mb-3">Master Password</h3>
+        <button className="btn btn-primary-custom">
           Change Master Password
         </button>
-        <p className="text-sm text-gray-500 mt-2">
+        <div className="form-text mt-2">
           Your master password is used to encrypt all your data
-        </p>
-      </div>
-
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Two-Factor Authentication</h3>
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-          <div>
-            <p className="font-medium text-gray-900">2FA Status</p>
-            <p className="text-sm text-gray-500">Not enabled</p>
-          </div>
-          <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-            Enable 2FA
-          </button>
         </div>
       </div>
 
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Session Management</h3>
-        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+      <div className="col-12">
+        <h3 className="h5 fw-bold text-dark-override mb-3">Two-Factor Authentication</h3>
+        <div className="card bg-light">
+          <div className="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <p className="fw-medium text-dark-override mb-1">2FA Status</p>
+              <p className="text-muted mb-0">Not enabled</p>
+            </div>
+            <button className="btn btn-success">
+              Enable 2FA
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="col-12">
+        <h3 className="h5 fw-bold text-dark-override mb-3">Session Management</h3>
+        <button className="btn btn-danger">
           Log Out All Devices
         </button>
-        <p className="text-sm text-gray-500 mt-2">
+        <div className="form-text mt-2">
           This will log you out of all devices and browsers
-        </p>
+        </div>
       </div>
     </div>
   </div>
@@ -142,20 +154,20 @@ const SecuritySettings = () => (
 
 const PreferencesSettings = () => (
   <div>
-    <h2 className="text-xl font-semibold text-gray-900 mb-6">Preferences</h2>
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Theme</h3>
-        <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+    <h2 className="h3 fw-bold text-dark-override mb-4">⚙️ Preferences</h2>
+    <div className="row g-4">
+      <div className="col-md-6">
+        <h3 className="h5 fw-bold text-dark-override mb-3">Theme</h3>
+        <select className="form-select form-control-custom">
           <option>Light</option>
           <option>Dark</option>
           <option>System</option>
         </select>
       </div>
 
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Auto-lock</h3>
-        <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      <div className="col-md-6">
+        <h3 className="h5 fw-bold text-dark-override mb-3">Auto-lock</h3>
+        <select className="form-select form-control-custom">
           <option>Never</option>
           <option>5 minutes</option>
           <option>15 minutes</option>
@@ -163,17 +175,21 @@ const PreferencesSettings = () => (
         </select>
       </div>
 
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Notifications</h3>
-        <div className="space-y-3">
-          <label className="flex items-center">
-            <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" defaultChecked />
-            <span className="ml-2 text-gray-700">Security alerts</span>
-          </label>
-          <label className="flex items-center">
-            <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-            <span className="ml-2 text-gray-700">Password expiry reminders</span>
-          </label>
+      <div className="col-12">
+        <h3 className="h5 fw-bold text-dark-override mb-3">Notifications</h3>
+        <div className="d-flex flex-column gap-3">
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="securityAlerts" defaultChecked />
+            <label className="form-check-label text-dark-override" htmlFor="securityAlerts">
+              Security alerts
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="passwordReminders" />
+            <label className="form-check-label text-dark-override" htmlFor="passwordReminders">
+              Password expiry reminders
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -182,38 +198,40 @@ const PreferencesSettings = () => (
 
 const DataSettings = () => (
   <div>
-    <h2 className="text-xl font-semibold text-gray-900 mb-6">Data Management</h2>
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Export Data</h3>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+    <h2 className="h3 fw-bold text-dark-override mb-4">📊 Data Management</h2>
+    <div className="row g-4">
+      <div className="col-md-6">
+        <h3 className="h5 fw-bold text-dark-override mb-3">Export Data</h3>
+        <button className="btn btn-primary-custom">
           Export Vault
         </button>
-        <p className="text-sm text-gray-500 mt-2">
+        <div className="form-text mt-2">
           Download all your vault data in encrypted format
-        </p>
+        </div>
       </div>
 
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Import Data</h3>
-        <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+      <div className="col-md-6">
+        <h3 className="h5 fw-bold text-dark-override mb-3">Import Data</h3>
+        <button className="btn btn-success">
           Import from File
         </button>
-        <p className="text-sm text-gray-500 mt-2">
+        <div className="form-text mt-2">
           Import passwords from other password managers
-        </p>
+        </div>
       </div>
 
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Storage Usage</h3>
-        <div className="bg-gray-50 rounded-lg p-4">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-gray-700">Vault Items</span>
-            <span className="font-medium">0 items</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-700">Storage Used</span>
-            <span className="font-medium">0 KB</span>
+      <div className="col-12">
+        <h3 className="h5 fw-bold text-dark-override mb-3">Storage Usage</h3>
+        <div className="card bg-light">
+          <div className="card-body">
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <span className="text-dark-override">Vault Items</span>
+              <span className="fw-bold text-dark-override">0 items</span>
+            </div>
+            <div className="d-flex justify-content-between align-items-center">
+              <span className="text-dark-override">Storage Used</span>
+              <span className="fw-bold text-dark-override">0 KB</span>
+            </div>
           </div>
         </div>
       </div>
