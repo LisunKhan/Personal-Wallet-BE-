@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import API from '../services/api';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth.jsx';
 import { hashMasterPassword } from '../utils/crypto';
-import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,16 +19,16 @@ const LoginPage = () => {
     try {
       const hashedPassword = await hashMasterPassword(password, email);
 
-      const response = await API.post('/accounts/login/', {
+      await login({
         email: email,
         master_key_hash: hashedPassword,
       });
 
-      localStorage.setItem('access_token', response.data.access);
-      localStorage.setItem('refresh_token', response.data.refresh);
-      setMessage('Login successful!');
-      setEmail('');
-      setPassword('');
+      setMessage('Login successful! Redirecting...');
+      // The useAuth hook will handle the redirect automatically
+      setTimeout(() => {
+        navigate('/vault');
+      }, 1000);
     } catch (error) {
       setMessage(`Login failed: ${error.response?.data?.detail || error.message}`);
       console.error(error);

@@ -1,8 +1,22 @@
-Django
-djangorestframework
-argon2-cffi
-pycryptodome
-boto3
-djangorestframework-simplejwt
-django-cors-headers
-argon2-cffi
+# Django and DRF
+Django==5.0.1
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.0
+django-cors-headers==4.3.1
+
+# API Documentation
+drf-spectacular==0.27.0
+
+# Security and Encryption
+argon2-cffi==23.1.0
+cryptography>=3.4.8
+
+# Database (for production, you might want PostgreSQL)
+psycopg2-binary==2.9.9
+
+# Development tools
+python-decouple==3.8
+Pillow>=8.0.0
+
+# Optional: For better password security
+requests>=2.25.0  # For checking compromised passwords via HaveIBeenPwned API

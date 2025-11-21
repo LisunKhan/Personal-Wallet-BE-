@@ -2,10 +2,13 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer, LoginSerializer
+from .schemas import signup_schema, login_schema
+
 
 class SignupView(generics.CreateAPIView):
     serializer_class = UserSerializer
 
+    @signup_schema
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -13,9 +16,11 @@ class SignupView(generics.CreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
+    @login_schema
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

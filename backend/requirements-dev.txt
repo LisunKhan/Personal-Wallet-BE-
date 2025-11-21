@@ -1,0 +1,22 @@
+# Core Django and DRF - Essential
+Django>=4.2,<6.0
+djangorestframework>=3.14.0
+djangorestframework-simplejwt>=5.0.0
+django-cors-headers>=4.0.0
+
+# API Documentation
+drf-spectacular>=0.25.0
+
+# Security and Encryption - Compatible versions
+argon2-cffi>=21.0.0
+cryptography>=3.4.8
+
+# Database - Optional for development (SQLite is default)
+# psycopg2-binary>=2.9.0  # Uncomment for PostgreSQL
+
+# Development tools
+python-decouple>=3.6
+Pillow>=8.0.0
+
+# Optional: For better password security
+requests>=2.25.0

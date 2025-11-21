@@ -42,19 +42,56 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'drf_spectacular',
 
     # My apps
     'apps.accounts',
     'apps.vault',
-    'apps.documents',
-    'apps.audit',
-    'apps.common',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# Spectacular settings for API documentation
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Personal Digital Wallet API',
+    'DESCRIPTION': 'A secure personal digital wallet API for storing passwords, documents, notes, and more with end-to-end encryption.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SCHEMA_PATH_PREFIX': '/api/',
+    'TAGS': [
+        {'name': 'Authentication', 'description': 'User authentication and account management'},
+        {'name': 'Categories', 'description': 'Organize vault items with categories'},
+        {'name': 'Vault Items', 'description': 'Manage passwords, documents, notes, cards, and identities'},
+        {'name': 'Files', 'description': 'Secure file upload, download, and management'},
+        {'name': 'Password Tools', 'description': 'Password generation and security tools'},
+        {'name': 'Statistics', 'description': 'Vault analytics and security insights'},
+        {'name': 'Emergency Access', 'description': 'Emergency contact and access management'},
+        {'name': 'Security & Audit', 'description': 'Security settings and audit logs'},
+        {'name': 'Data Export', 'description': 'Export and backup functionality'},
+    ],
+    'CONTACT': {
+        'name': 'Digital Wallet Support',
+        'email': 'support@digitalwallet.com',
+    },
+    'LICENSE': {
+        'name': 'MIT License',
+    },
+    'SERVERS': [
+        {
+            'url': 'http://localhost:8000',
+            'description': 'Development server'
+        },
+        {
+            'url': 'https://api.digitalwallet.com',
+            'description': 'Production server'
+        }
+    ],
 }
 
 MIDDLEWARE = [
@@ -152,3 +189,20 @@ CORS_ALLOW_CREDENTIALS = True
 
 # For development only - remove in production
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Media files (for secure file storage)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Vault-specific settings
+VAULT_ENCRYPTION_KEY = os.environ.get('VAULT_ENCRYPTION_KEY', 'your-32-byte-base64-encoded-key-here')
+
+# JWT Settings
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
